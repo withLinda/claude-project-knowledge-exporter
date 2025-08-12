@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Claude Project Knowledge Exporter Bookmarklet</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            max-width: 800px;
+            margin: 50px auto;
+            padding: 0 20px;
+            line-height: 1.6;
+            color: #333;
+        }
+        h1 {
+            color: #2c3e50;
+            border-bottom: 3px solid #3498db;
+            padding-bottom: 10px;
+        }
+        .bookmarklet-container {
+            background: #f8f9fa;
+            border: 2px dashed #3498db;
+            border-radius: 10px;
+            padding: 30px;
+            text-align: center;
+            margin: 30px 0;
+        }
+        .bookmarklet-link {
+            display: inline-block;
+            background: #3498db;
+            color: white;
+            text-decoration: none;
+            padding: 15px 30px;
+            border-radius: 5px;
+            font-size: 18px;
+            font-weight: bold;
+            transition: background 0.3s;
+        }
+        .bookmarklet-link:hover {
+            background: #2980b9;
+        }
+        .instructions {
+            background: #ecf0f1;
+            border-left: 4px solid #3498db;
+            padding: 20px;
+            margin: 20px 0;
+        }
+        .instructions h2 {
+            margin-top: 0;
+            color: #2c3e50;
+        }
+        .instructions ol {
+            margin: 10px 0;
+            padding-left: 25px;
+        }
+        .instructions li {
+            margin: 10px 0;
+        }
+        .features {
+            margin: 30px 0;
+        }
+        .features ul {
+            list-style-type: none;
+            padding: 0;
+        }
+        .features li {
+            background: #e8f5e9;
+            margin: 10px 0;
+            padding: 10px 15px;
+            border-radius: 5px;
+            border-left: 4px solid #4caf50;
+        }
+        .features li:before {
+            content: "✓ ";
+            color: #4caf50;
+            font-weight: bold;
+        }
+        code {
+            background: #f4f4f4;
+            padding: 2px 5px;
+            border-radius: 3px;
+            font-family: 'Courier New', monospace;
+        }
+    </style>
+</head>
+<body>
+    <h1>Claude Project Knowledge Exporter Bookmarklet</h1>
+    
+    <p>Export your Claude AI project knowledge with a single click! This bookmarklet allows you to download your project documentation in both Markdown and JSON formats without needing to open the browser console.</p>
+    
+    <div class="bookmarklet-container">
+        <p><strong>Drag this button to your bookmarks bar:</strong></p>
+        <a href='javascript:(function(){function getProjectId(){const urlPath=window.location.pathname;const matches=urlPath.match(/\/project\/([a-f0-9-]+)/);return matches?matches[1]:null}function getProjectNameFromPage(){console.log("🔍 Extracting project name from page...");const primarySelector="h1.font-heading.text-text-200";let projectElement=document.querySelector(primarySelector);if(projectElement&&projectElement.textContent.trim()){const projectName=projectElement.textContent.trim();console.log(`✅ Found project name via primary selector: "${projectName}"`);return projectName}const secondarySelector="h1[class*=\"font-heading\"]";projectElement=document.querySelector(secondarySelector);if(projectElement&&projectElement.textContent.trim()){const projectName=projectElement.textContent.trim();console.log(`✅ Found project name via secondary selector: "${projectName}"`);return projectName}const allH1Elements=document.querySelectorAll("h1");for(const h1 of allH1Elements){const text=h1.textContent.trim();if(text&&!text.toLowerCase().includes("claude")&&!text.toLowerCase().includes("anthropic")&&!text.toLowerCase().includes("menu")&&!text.toLowerCase().includes("navigation")&&text.length>2&&text.length<100){console.log(`✅ Found project name via h1 search: "${text}"`);return text}}const pageTitle=document.title;if(pageTitle&&pageTitle!=="Claude"&&!pageTitle.includes("Anthropic")){const titleParts=pageTitle.split(" - ");if(titleParts.length>1&&titleParts[0].trim()){const projectName=titleParts[0].trim();console.log(`✅ Found project name via page title: "${projectName}"`);return projectName}}const projectElements=document.querySelectorAll("[data-project], [class*=\"project\"], [id*=\"project\"]");for(const element of projectElements){const text=element.textContent?.trim();if(text&&text.length>2&&text.length<100){console.log(`✅ Found project name via project attribute: "${text}"`);return text}}console.log("⚠️ Could not extract project name from page, using fallback");return"Claude Project Knowledge"}function getOrganizationId(){return extractClaudeOrgID()}function extractClaudeOrgID(){console.log("🔍 Starting advanced organizationID extraction for project...");const projectId=window.location.pathname.match(/\/project\/([a-f0-9-]+)/)?.[1];console.log(`📝 Current project ID: ${projectId}`);console.log("Method 1: Checking localStorage...");for(let i=0;i<localStorage.length;i++){const key=localStorage.key(i);try{const value=localStorage.getItem(key);if(value&&value.includes("organizationID")){console.log(`Found potential match in localStorage key: ${key}`);try{const parsed=JSON.parse(value);const orgId=extractOrgIdFromObject(parsed);if(orgId){console.log(`✅ Found organizationID in localStorage: ${orgId}`);return orgId}}catch(e){}}}catch(e){}}console.log("Method 2: Checking sessionStorage...");for(let i=0;i<sessionStorage.length;i++){const key=sessionStorage.key(i);try{const value=sessionStorage.getItem(key);if(value&&value.includes("organizationID")){console.log(`Found potential match in sessionStorage key: ${key}`);try{const parsed=JSON.parse(value);const orgId=extractOrgIdFromObject(parsed);if(orgId){console.log(`✅ Found organizationID in sessionStorage: ${orgId}`);return orgId}}catch(e){}}}catch(e){}}console.log("Method 3: Checking global window variables...");const potentialPaths=["window.__NEXT_DATA__.props.pageProps.organization.uuid","window.__NEXT_DATA__.props.pageProps.organization.id","window.__NEXT_DATA__.props.pageProps.organizationID","window.__PRELOADED_STATE__.organization.uuid","window.__PRELOADED_STATE__.organization.id","window.app.organization.uuid","window.app.organization.id","window.app.user.organization.uuid"];for(const path of potentialPaths){try{const value=eval(path);if(value&&/^[a-f0-9-]{36}$/.test(value)){console.log(`✅ Found organizationID in ${path}: ${value}`);return value}}catch(e){}}console.log("Method 4: Checking cookies...");const cookies=document.cookie.split(";");for(const cookie of cookies){const[name,value]=cookie.trim().split("=");if(name.toLowerCase().includes("lastactiveorg")||name.toLowerCase().includes("organization")||name.toLowerCase().includes("org")){console.log(`Checking project-context cookie: ${name}=${value}`);if(value&&value.length>30&&/[a-f0-9-]{30,}/.test(value)){if(/^[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}$/.test(value)){console.log(`✅ Found likely organizationID in cookie: ${value}`);return value}}}}const allUUIDs=document.documentElement.outerHTML.match(/[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}/g)||[];if(allUUIDs.length>0){console.log("Found these UUIDs in the document:");console.log(allUUIDs);if(projectId){const projIdIndex=allUUIDs.indexOf(projectId);if(projIdIndex>0){const possibleOrgId=allUUIDs[projIdIndex-1];console.log(`⚠️ Possible organizationID based on proximity to project ID: ${possibleOrgId}`);return possibleOrgId}}}console.log("❌ Could not automatically find the organizationID for project.");const userInput=prompt("Could not automatically detect your organization ID. Please enter it manually:","");return userInput||null}function extractOrgIdFromObject(obj,depth=0,maxDepth=5){if(depth>maxDepth||!obj||typeof obj!=="object"){return null}if(obj.organizationID&&typeof obj.organizationID==="string"&&/^[a-f0-9-]{36}$/.test(obj.organizationID)){return obj.organizationID}if(obj.customIDs&&obj.customIDs.organizationID&&/^[a-f0-9-]{36}$/.test(obj.customIDs.organizationID)){return obj.customIDs.organizationID}if(obj.organization&&obj.organization.uuid&&/^[a-f0-9-]{36}$/.test(obj.organization.uuid)){return obj.organization.uuid}if(obj.organization&&obj.organization.id&&/^[a-f0-9-]{36}$/.test(obj.organization.id)){return obj.organization.id}for(const key in obj){if(Object.prototype.hasOwnProperty.call(obj,key)&&typeof obj[key]==="object"&&obj[key]!==null){const result=extractOrgIdFromObject(obj[key],depth+1,maxDepth);if(result){return result}}}return null}function sanitizeFilename(filename){if(!filename)return"claude_project_knowledge";return filename.replace(/\s+/g,"_").replace(/[^\w\-\.]/g,"").replace(/_{2,}/g,"_").replace(/^_|_$/g,"").substring(0,200)||"claude_project_knowledge"}function buildApiUrl(){const orgId=getOrganizationId();const projectId=getProjectId();if(!orgId||!projectId){console.error("Could not find organization ID or project ID");return null}return `https://claude.ai/api/organizations/${orgId}/projects/${projectId}/docs`}function extractIndividualFiles(data,baseFilename){const documents=Array.isArray(data)?data:(data.documents||[]);if(!documents.length){console.log("No individual documents found for extraction");return}console.log(`📄 Extracting ${documents.length} individual files...`);showNotification(`📄 Extracting ${documents.length} individual files...`,"info");let filesDownloaded=0;documents.forEach((doc,index)=>{setTimeout(()=>{let filename=doc.file_name||doc.name||`document_${index+1}.md`;if(!filename.toLowerCase().endsWith(".md")){filename+=".md"}const sanitizedFilename=sanitizeFilename(filename.replace(/\.md$/i,""))+".md";let content=doc.content||"";if(content&&!content.startsWith("#")){const title=doc.file_name||doc.name||"Document";const cleanTitle=title.replace(/\.md$/i,"");content=`# ${cleanTitle}\n\n${content}`}if(!content.includes("*Created:")&&doc.created_at){content+=`\n\n---\n\n*Created: ${new Date(doc.created_at).toLocaleString()}*`;if(doc.uuid){content+=`\n*Document ID: ${doc.uuid}*`}}const fileUri="data:text/markdown;charset=utf-8,"+encodeURIComponent(content);const downloadLink=document.createElement("a");downloadLink.setAttribute("href",fileUri);downloadLink.setAttribute("download",sanitizedFilename);downloadLink.click();filesDownloaded++;console.log(`📁 Individual file downloaded: ${sanitizedFilename}`);if(filesDownloaded===documents.length){showNotification(`✅ All ${documents.length} individual files extracted!`,"success")}},index*500)})}function convertToMarkdown(data){const documents=Array.isArray(data)?data:(data.documents||[]);const projectName=getProjectNameFromPage();let markdown=`# ${projectName}\n\n`;if(!Array.isArray(data)){if(data.description){markdown+=`## Description\n${data.description}\n\n`}markdown+=`*Created: ${new Date(data.created_at||Date.now()).toLocaleString()}*\n\n`}markdown+=`---\n\n`;if(documents.length>0){markdown+=`## 📋 Project Contents\n\n`;markdown+=`This project contains ${documents.length} documents:\n\n`;documents.forEach((doc,index)=>{const filename=doc.file_name||doc.name||`Document ${index+1}`;const created=doc.created_at?new Date(doc.created_at).toLocaleDateString():"Unknown";markdown+=`${index+1}. **${filename.replace(/\.md$/i,"")}** _(Created: ${created})_\n`});markdown+=`\n---\n\n`;documents.forEach((doc,index)=>{const filename=doc.file_name||doc.name||`Document ${index+1}`;markdown+=`## 📄 ${filename.replace(/\.md$/i,"")}\n\n`;if(doc.content){markdown+=`${doc.content}\n\n`}if(doc.created_at){markdown+=`*Created: ${new Date(doc.created_at).toLocaleString()}*\n\n`}if(index<documents.length-1){markdown+=`---\n\n`}})}else{if(!Array.isArray(data)&&data.content){markdown+=`## Content\n\n${data.content}\n\n`}else{markdown+=`## No Content Found\n\nNo documents were found in this project export.\n\n`}}return markdown}function showNotification(message,type="info"){const notification=document.createElement("div");notification.style.cssText=`position:fixed;top:20px;right:20px;padding:15px 20px;border-radius:8px;color:white;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;font-size:14px;z-index:10000;box-shadow:0 4px 12px rgba(0,0,0,0.3);max-width:350px;word-wrap:break-word;transition:all 0.3s ease;`;if(type==="info"){notification.style.backgroundColor="#3498db"}else if(type==="success"){notification.style.backgroundColor="#27ae60"}else if(type==="error"){notification.style.backgroundColor="#e74c3c"}notification.innerHTML=message;document.body.appendChild(notification);setTimeout(()=>{if(notification.parentNode){notification.style.opacity="0";setTimeout(()=>{if(notification.parentNode){notification.parentNode.removeChild(notification)}},300)}},4000)}function askExportPreference(){const choice=prompt("Choose export type:\n\n"+"1 = Consolidated only (single MD + JSON)\n"+"2 = Individual files only (multiple MD + JSON)\n"+"3 = Complete export (both consolidated + individual + JSON)\n\n"+"Enter 1, 2, or 3 (or press Cancel for Complete export):","3");if(choice===null||choice==="")return"complete";switch(choice.trim()){case"1":return"consolidated";case"2":return"individual";case"3":return"complete";default:return"complete"}}function fetchAndDownloadProjectKnowledge(){const orgId=getOrganizationId();const projectId=getProjectId();showNotification("🔍 Starting Claude project knowledge export...","info");console.log("📊 Export Status:");console.log(`Organization ID: ${orgId}`);console.log(`Project ID: ${projectId}`);if(!orgId||!projectId){const errorMsg="❌ Could not detect organization ID or project ID";console.error(errorMsg);showNotification(errorMsg,"error");return}showNotification(`📋 Detected IDs:<br>Org: ${orgId.substring(0,8)}...<br>Project: ${projectId.substring(0,8)}...`,"info");const apiUrl=buildApiUrl();if(!apiUrl){console.error("Failed to build API URL");showNotification("❌ Failed to build API URL","error");return}console.log("Fetching project knowledge from:",apiUrl);fetch(apiUrl,{method:"GET",credentials:"include"}).then(response=>{if(!response.ok){throw new Error(`HTTP error! Status: ${response.status}`)}return response.json()}).then(data=>{console.log("✅ Project knowledge data retrieved successfully");console.log("Data structure:",data);const documents=Array.isArray(data)?data:(data.documents||[]);const projectName=getProjectNameFromPage();const baseFilename=sanitizeFilename(projectName);const markdownFilename=`${baseFilename}.md`;const jsonFilename=`${baseFilename}.json`;console.log(`📝 Project Details:`);console.log(`  Name: ${projectName}`);console.log(`  Documents: ${documents.length}`);console.log(`  Base filename: ${baseFilename}`);showNotification(`📝 Found ${documents.length} documents<br>📁 Base filename: ${baseFilename}`,"info");const exportType=askExportPreference();console.log(`Export type selected: ${exportType}`);const jsonData=JSON.stringify(data,null,2);const jsonUri="data:application/json;charset=utf-8,"+encodeURIComponent(jsonData);const jsonLink=document.createElement("a");jsonLink.setAttribute("href",jsonUri);jsonLink.setAttribute("download",jsonFilename);jsonLink.click();console.log(`📄 JSON download initiated: ${jsonFilename}`);if(exportType==="consolidated"||exportType==="complete"){setTimeout(()=>{const markdownContent=convertToMarkdown(data);const markdownUri="data:text/markdown;charset=utf-8,"+encodeURIComponent(markdownContent);const exportLink=document.createElement("a");exportLink.setAttribute("href",markdownUri);exportLink.setAttribute("download",markdownFilename);exportLink.click();console.log(`📄 Consolidated markdown download initiated: ${markdownFilename}`)},500)}if(exportType==="individual"||exportType==="complete"){setTimeout(()=>{extractIndividualFiles(data,baseFilename)},exportType==="complete"?1000:500)}const delay=exportType==="complete"?3000:(exportType==="individual"?(documents.length*500+1000):1500);setTimeout(()=>{let message="✅ Export completed!";if(exportType==="consolidated"){message+=`<br>📁 Files: ${markdownFilename} & ${jsonFilename}`}else if(exportType==="individual"){message+=`<br>📁 Files: ${documents.length} individual MD files + ${jsonFilename}`}else{message+=`<br>📁 Files: ${markdownFilename} + ${documents.length} individual MD files + ${jsonFilename}`}showNotification(message,"success")},delay)}).catch(error=>{console.error("❌ Error fetching project knowledge data:",error);showNotification(`❌ Export failed: ${error.message}`,"error")})}fetchAndDownloadProjectKnowledge()})();' class="bookmarklet-link">Export Claude Project Knowledge</a>
+        <p><em>Can't drag? Right-click and add to bookmarks manually.</em></p>
+    </div>
+    
+    <div class="instructions">
+        <h2>How to Install</h2>
+        <ol>
+            <li>Make sure your bookmarks bar is visible:
+                <ul>
+                    <li><strong>Chrome/Edge:</strong> Press <code>Ctrl+Shift+B</code> (Windows/Linux) or <code>Cmd+Shift+B</code> (Mac)</li>
+                    <li><strong>Firefox:</strong> Press <code>Ctrl+B</code> (Windows/Linux) or <code>Cmd+B</code> (Mac)</li>
+                    <li><strong>Safari:</strong> View → Show Bookmarks Bar</li>
+                </ul>
+            </li>
+            <li>Drag the blue "Export Claude Project Knowledge" button above to your bookmarks bar</li>
+            <li>If dragging doesn't work, right-click the button and select "Bookmark This Link" or "Add to Bookmarks"</li>
+        </ol>
+    </div>
+    
+    <div class="instructions">
+        <h2>How to Use</h2>
+        <ol>
+            <li>Open any Claude project in your browser (URL should contain <code>/project/</code>)</li>
+            <li>Click the "Export Claude Project Knowledge" bookmarklet in your bookmarks bar</li>
+            <li>Choose your preferred export type:
+                <ul>
+                    <li><strong>Consolidated only:</strong> Single overview MD file + JSON</li>
+                    <li><strong>Individual files only:</strong> Separate MD file for each document + JSON</li>
+                    <li><strong>Complete export:</strong> Both consolidated + individual files + JSON</li>
+                </ul>
+            </li>
+            <li>The script will automatically download your selected files</li>
+            <li>Check your browser's download folder for the exported files</li>
+        </ol>
+    </div>
+    
+    <div class="features">
+        <h2>Features</h2>
+        <ul>
+            <li>Multiple export options: consolidated, individual, or complete</li>
+            <li>Individual file extraction - each document becomes its own MD file</li>
+            <li>Dynamic file naming based on original document names</li>
+            <li>Exports both Markdown and JSON formats</li>
+            <li>Includes all project documentation and knowledge</li>
+            <li>Works entirely in your browser - no data sent to external servers</li>
+            <li>Automatic organization ID detection</li>
+            <li>One-click export without opening developer console</li>
+            <li>Visual notifications showing export progress and status</li>
+            <li>Detailed console logs with organization ID, project ID, and metadata</li>
+            <li>Handles large projects with multiple documents efficiently</li>
+            <li>Preserves document metadata including creation dates and IDs</li>
+        </ul>
+    </div>
+    
+    <div class="instructions">
+        <h2>Troubleshooting</h2>
+        <ul>
+            <li><strong>Bookmarklet doesn't work:</strong> Make sure you're on a Claude project page (URL should contain <code>/project/</code>)</li>
+            <li><strong>No downloads:</strong> Check your browser's download settings and popup blocker</li>
+            <li><strong>Organization ID prompt:</strong> If prompted, you can find your organization ID in browser cookies (look for <code>lastActiveOrg</code>) or in the developer console</li>
+        </ul>
+    </div>
+</body>
+</html>
