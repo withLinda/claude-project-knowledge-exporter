@@ -1,5 +1,12 @@
 # Claude Project Knowledge Exporter
 
+## 🔗 Related Projects
+
+This is part of a suite of Claude.ai export tools:
+- **[Claude Conversation Exporter](https://github.com/withLinda/claude-conversation-exporter)** - Export individual chat conversations
+- **[Claude Project Conversations Exporter](https://github.com/withLinda/claude-project-conversations-exporter)** - Export all conversations within a project
+- **Claude Project Knowledge Exporter** (this tool) - Export project knowledge documentation
+
 Export your Claude AI project knowledge documentation as Markdown and JSON files with a single click.
 
 ## 🔗 Try It Now
