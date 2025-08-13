@@ -2,6 +2,12 @@
 
 Export your Claude AI project knowledge documentation as Markdown and JSON files with a single click.
 
+## 🔗 Try It Now
+
+**Live Demo:** https://withlinda.github.io/claude-project-knowledge-exporter/
+
+Visit the link above to install the bookmarklet directly - no download required!
+
 > **Looking to export conversations instead?** Check out [Claude Conversation Exporter](https://github.com/withLinda/claude-conversation-exporter) for exporting individual chat conversations.
 
 ## ✨ Features
@@ -16,9 +22,14 @@ Export your Claude AI project knowledge documentation as Markdown and JSON files
 
 ![Bookmarklet Installation](screenshots/bookmarklet_page.png)
 
-1. Open `bookmarklet.html` in your browser
+### Option 1: Direct Install (Recommended)
+1. Visit https://withlinda.github.io/claude-project-knowledge-exporter/
 2. Drag the blue "Export Claude Project Knowledge" button to your bookmarks bar
 3. That's it! The bookmarklet is now ready to use on any Claude project
+
+### Option 2: Local Install
+1. Clone this repository and open `index.html` in your browser
+2. Follow the same steps as above
 
 ## 🎯 Usage
 
